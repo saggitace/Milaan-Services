@@ -22,10 +22,10 @@ const poppins = Poppins({
 })
 
 export const metadata: Metadata = {
-  title: "Milaan Infotech - Leading Digital Transformation Partner",
+  title: "Milaan Services - Leading Digital Transformation Partner",
   description:
     "Milaan Infotech provides comprehensive IT and digital marketing services to drive business growth and digital transformation.",
-    generator: 'v0.dev'
+    generator: 'Milaan  Services'
 }
 
 export default function RootLayout({
