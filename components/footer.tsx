@@ -148,7 +148,7 @@ export default function Footer() {
             <p className="text-sm text-muted-foreground">
               &copy; {new Date().getFullYear()} Milaan Infotech Pvt Ltd. All rights reserved.
             </p>
-            <div className="flex space-x-6 mt-4 md:mt-0">
+            {/* <div className="flex space-x-6 mt-4 md:mt-0">
               <Link
                 href="/privacy-policy"
                 className="text-sm text-muted-foreground hover:text-primary transition-colors"
@@ -164,7 +164,7 @@ export default function Footer() {
               <Link href="/sitemap" className="text-sm text-muted-foreground hover:text-primary transition-colors">
                 Sitemap
               </Link>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
