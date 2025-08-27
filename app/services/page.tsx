@@ -4,7 +4,10 @@ import { ArrowRight, Code, Globe, LineChart, Palette, Lightbulb, Rocket, Users }
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import ContactCTA from "@/components/contact-cta"
+import dynamic from "next/dynamic"
+const ContactCTA = dynamic(() => import("@/components/contact-cta"), {
+  loading: () => <div className="h-64 bg-muted animate-pulse rounded-lg"></div>
+})
 
 export default function ServicesPage() {
   return (

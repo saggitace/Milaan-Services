@@ -7,21 +7,47 @@ interface ThreeJSBackgroundProps {
   color?: string
 }
 
-export default function ThreeJSBackground({ variant = "particles", color = "#3b82f6" }: ThreeJSBackgroundProps) {
+export default function ThreeJSBackground({
+  variant = "particles",
+  color = "#3b82f6",
+}: ThreeJSBackgroundProps) {
   const mountRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (typeof window === "undefined") return
 
     let scene: any, camera: any, renderer: any, mesh: any
+    const networkMeshes: any[] = []
     let animationId: number
 
     const init = async () => {
-      const THREE = await import("three")
+      // Named import for tree-shaking
+      const {
+        Scene,
+        PerspectiveCamera,
+        WebGLRenderer,
+        BufferGeometry,
+        BufferAttribute,
+        PointsMaterial,
+        Points,
+        MeshBasicMaterial,
+        Mesh,
+        PlaneGeometry,
+        SphereGeometry,
+        LineBasicMaterial,
+        Line,
+        Vector3,
+      } = await import("three")
 
-      scene = new THREE.Scene()
-      camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
-      renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true })
+      // Scene setup
+      scene = new Scene()
+      camera = new PerspectiveCamera(
+        75,
+        mountRef.current!.clientWidth / mountRef.current!.clientHeight,
+        0.1,
+        1000
+      )
+      renderer = new WebGLRenderer({ alpha: true, antialias: true })
 
       if (mountRef.current) {
         const rect = mountRef.current.getBoundingClientRect()
@@ -30,77 +56,78 @@ export default function ThreeJSBackground({ variant = "particles", color = "#3b8
         mountRef.current.appendChild(renderer.domElement)
       }
 
+      // Particle variant
       if (variant === "particles") {
-        // Floating particles
-        const particlesGeometry = new THREE.BufferGeometry()
-        const particlesCount = 50
-        const posArray = new Float32Array(particlesCount * 3)
-
-        for (let i = 0; i < particlesCount * 3; i++) {
-          posArray[i] = (Math.random() - 0.5) * 8
+        const count = 50
+        const geometry = new BufferGeometry()
+        const positions = new Float32Array(count * 3)
+        for (let i = 0; i < count * 3; i++) {
+          positions[i] = (Math.random() - 0.5) * 8
         }
+        geometry.setAttribute("position", new BufferAttribute(positions, 3))
 
-        particlesGeometry.setAttribute("position", new THREE.BufferAttribute(posArray, 3))
-
-        const particlesMaterial = new THREE.PointsMaterial({
+        const material = new PointsMaterial({
           size: 0.03,
-          color: color,
+          color,
           transparent: true,
           opacity: 0.6,
         })
 
-        mesh = new THREE.Points(particlesGeometry, particlesMaterial)
+        mesh = new Points(geometry, material)
         scene.add(mesh)
-      } else if (variant === "waves") {
-        // Animated waves
-        const geometry = new THREE.PlaneGeometry(10, 10, 50, 50)
-        const material = new THREE.MeshBasicMaterial({
-          color: color,
+      }
+
+      // Waves variant
+      else if (variant === "waves") {
+        const geometry = new PlaneGeometry(10, 10, 50, 50)
+        const material = new MeshBasicMaterial({
+          color,
           wireframe: true,
           transparent: true,
           opacity: 0.3,
         })
-
-        mesh = new THREE.Mesh(geometry, material)
+        mesh = new Mesh(geometry, material)
         mesh.rotation.x = -Math.PI / 4
         scene.add(mesh)
-      } else if (variant === "network") {
-        // Network connections
-        const points = []
+      }
+
+      // Network variant
+      else if (variant === "network") {
+        const points: InstanceType<typeof Vector3>[] = []
+
+        const sphereGeo = new SphereGeometry(0.02, 8, 8)
+        const sphereMat = new MeshBasicMaterial({ color })
+
         for (let i = 0; i < 20; i++) {
-          points.push(
-            new THREE.Vector3((Math.random() - 0.5) * 6, (Math.random() - 0.5) * 4, (Math.random() - 0.5) * 2),
+          const p = new Vector3(
+            (Math.random() - 0.5) * 6,
+            (Math.random() - 0.5) * 4,
+            (Math.random() - 0.5) * 2
           )
+          points.push(p)
+
+          const sphere = new Mesh(sphereGeo, sphereMat)
+          sphere.position.copy(p)
+          scene.add(sphere)
+          networkMeshes.push(sphere)
         }
 
-        // Create lines between points
+        const lineMat = new LineBasicMaterial({ color, transparent: true, opacity: 0.2 })
         for (let i = 0; i < points.length; i++) {
           for (let j = i + 1; j < points.length; j++) {
             if (points[i].distanceTo(points[j]) < 2) {
-              const geometry = new THREE.BufferGeometry().setFromPoints([points[i], points[j]])
-              const material = new THREE.LineBasicMaterial({
-                color: color,
-                transparent: true,
-                opacity: 0.2,
-              })
-              const line = new THREE.Line(geometry, material)
+              const lineGeo = new BufferGeometry().setFromPoints([points[i], points[j]])
+              const line = new Line(lineGeo, lineMat)
               scene.add(line)
+              networkMeshes.push(line)
             }
           }
         }
-
-        // Add points
-        points.forEach((point) => {
-          const geometry = new THREE.SphereGeometry(0.02, 8, 8)
-          const material = new THREE.MeshBasicMaterial({ color: color })
-          const sphere = new THREE.Mesh(geometry, material)
-          sphere.position.copy(point)
-          scene.add(sphere)
-        })
       }
 
       camera.position.z = 5
 
+      // Animation loop
       const animate = () => {
         animationId = requestAnimationFrame(animate)
 
@@ -109,19 +136,17 @@ export default function ThreeJSBackground({ variant = "particles", color = "#3b8
             mesh.rotation.x += 0.001
             mesh.rotation.y += 0.002
           } else if (variant === "waves") {
-            const positions = mesh.geometry.attributes.position.array
-            for (let i = 0; i < positions.length; i += 3) {
-              positions[i + 2] = Math.sin((positions[i] + Date.now() * 0.001) * 2) * 0.1
+            const pos = mesh.geometry.attributes.position.array
+            for (let i = 0; i < pos.length; i += 3) {
+              pos[i + 2] = Math.sin((pos[i] + Date.now() * 0.001) * 2) * 0.1
             }
             mesh.geometry.attributes.position.needsUpdate = true
           }
         }
 
         if (variant === "network") {
-          scene.children.forEach((child: any) => {
-            if (child.type === "Mesh") {
-              child.rotation.y += 0.005
-            }
+          networkMeshes.forEach((m) => {
+            if (m.type === "Mesh") m.rotation.y += 0.005
           })
         }
 
@@ -146,14 +171,23 @@ export default function ThreeJSBackground({ variant = "particles", color = "#3b8
 
     return () => {
       window.removeEventListener("resize", handleResize)
-      if (animationId) {
-        cancelAnimationFrame(animationId)
+      cancelAnimationFrame(animationId)
+
+      // Clean up renderer
+      if (renderer) renderer.dispose()
+
+      // Clean up meshes
+      if (mesh) {
+        mesh.geometry.dispose()
+        if ((mesh.material as any).dispose) mesh.material.dispose()
       }
-      if (mountRef.current && renderer && renderer.domElement) {
+      networkMeshes.forEach((m) => {
+        if (m.geometry) m.geometry.dispose()
+        if ((m.material as any).dispose) m.material.dispose()
+      })
+
+      if (mountRef.current && renderer?.domElement) {
         mountRef.current.removeChild(renderer.domElement)
-      }
-      if (renderer) {
-        renderer.dispose()
       }
     }
   }, [variant, color])

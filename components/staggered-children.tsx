@@ -1,6 +1,15 @@
 "use client"
 
-import { useRef, useEffect, useState, type ReactNode, Children, cloneElement, isValidElement } from "react"
+import {
+  useRef,
+  useEffect,
+  useState,
+  type ReactNode,
+  Children,
+  cloneElement,
+  isValidElement,
+  ReactElement,
+} from "react"
 import { cn } from "@/lib/utils"
 
 type StaggeredChildrenProps = {
@@ -39,20 +48,14 @@ export default function StaggeredChildren({
           setIsVisible(false)
         }
       },
-      {
-        threshold,
-      },
+      { threshold },
     )
 
     const currentRef = ref.current
-    if (currentRef) {
-      observer.observe(currentRef)
-    }
+    if (currentRef) observer.observe(currentRef)
 
     return () => {
-      if (currentRef) {
-        observer.unobserve(currentRef)
-      }
+      if (currentRef) observer.unobserve(currentRef)
     }
   }, [threshold, once])
 
@@ -78,16 +81,17 @@ export default function StaggeredChildren({
     <div ref={ref} className={className}>
       {childrenArray.map((child, index) => {
         if (isValidElement(child)) {
-          return cloneElement(child, {
-            ...child.props,
+          const element = child as ReactElement<any> // ✅ safe cast
+          return cloneElement(element, {
+            ...element.props,
             className: cn(
               "transition-all",
               animationClasses[animation],
               isVisible && activeAnimationClasses[animation],
-              child.props.className,
+              element.props.className,
             ),
             style: {
-              ...child.props.style,
+              ...element.props.style,
               transitionDuration: `${duration}ms`,
               transitionDelay: `${initialDelay + index * staggerDelay}ms`,
             },

@@ -4,16 +4,36 @@ import { ArrowRight, CheckCircle, Code, Globe, LineChart, Lightbulb, Palette, Ro
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import TestimonialCard from "@/components/testimonial-card"
-import ClientLogos from "@/components/client-logos"
 import ContactCTA from "@/components/contact-cta"
-import AnimateOnScroll from "@/components/animate-on-scroll"
-import StaggeredChildren from "@/components/staggered-children"
-import AnimatedCounter from "@/components/animated-counter"
-import HoverCard from "@/components/hover-card"
 import ConsultationBooking from "@/components/consultation-booking"
-import ThreeJSHero from "@/components/three-js-hero"
-import ThreeJSBackground from "@/components/three-js-background"
-import ParallaxGreeting from "@/components/parallax-greeting"
+import dynamic from "next/dynamic"
+
+// Dynamic imports for heavy components
+const AnimateOnScroll = dynamic(() => import("@/components/animate-on-scroll"), {
+  loading: () => <div>{/* Static fallback */}</div>
+})
+
+const StaggeredChildren = dynamic(() => import("@/components/staggered-children"), {
+  loading: () => <div>{/* Static fallback */}</div>
+})
+
+const AnimatedCounter = dynamic(() => import("@/components/animated-counter"), {
+  loading: () => <span>100+</span> // Static fallback
+})
+
+const HoverCard = dynamic(() => import("@/components/hover-card"), {
+  loading: () => <div>{/* Static fallback */}</div>
+})
+
+import ThreeJSHero from '@/components/three-js-hero-client'
+import ThreeJSBackground from '@/components/three-js-background-client'
+
+const ParallaxGreeting = dynamic(() => import("@/components/parallax-greeting"), {
+  loading: () => <div className="h-96 bg-muted animate-pulse rounded-lg"></div>
+})
+
+// Blur placeholder for images
+const BLUR_DATA_URL = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaUMk9dfKb1o//Z"
 
 export default function Home() {
   return (
@@ -23,7 +43,7 @@ export default function Home() {
         <ThreeJSHero />
         <div className="container-custom section-padding relative z-10">
           <div className="grid gap-8 lg:grid-cols-2 lg:gap-12 items-center">
-            <AnimateOnScroll animation="fade-up" delay={200} className="space-y-6">
+            <div className="space-y-6">
               <div className="inline-flex items-center rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-sm text-primary dark:border-primary/30">
                 <span>Leading Digital Transformation Partner</span>
               </div>
@@ -42,18 +62,21 @@ export default function Home() {
                   <Link href="/services">Explore Services</Link>
                 </Button>
               </div>
-            </AnimateOnScroll>
-            <AnimateOnScroll animation="fade-up" delay={400} className="relative">
+            </div>
+            <div className="relative">
               <div className="relative h-[400px] w-full lg:h-[500px]">
                 <Image
                   src="/images/hero-digital-transformation.jpg"
                   alt="Digital Transformation"
-                  fill
+                  width={800}
+                  height={500}
                   className="object-cover rounded-lg shadow-xl dark:opacity-90"
                   priority
+                  placeholder="blur"
+                  blurDataURL={BLUR_DATA_URL}
                 />
               </div>
-              <AnimateOnScroll animation="fade-in" delay={800} className="absolute -bottom-6 -left-6 hidden md:block">
+              <div className="absolute -bottom-6 -left-6 hidden md:block">
                 <div className="bg-background rounded-lg shadow-lg p-4 w-48 dark:dark-card-glow">
                   <div className="flex items-center space-x-2">
                     <CheckCircle className="h-5 w-5 text-green-500" />
@@ -62,8 +85,8 @@ export default function Home() {
                     </span>
                   </div>
                 </div>
-              </AnimateOnScroll>
-              <AnimateOnScroll animation="fade-in" delay={1000} className="absolute -top-6 -right-6 hidden md:block">
+              </div>
+              <div className="absolute -top-6 -right-6 hidden md:block">
                 <div className="bg-background rounded-lg shadow-lg p-4 w-48 dark:dark-card-glow">
                   <div className="flex items-center space-x-2">
                     <Users className="h-5 w-5 text-primary" />
@@ -72,8 +95,8 @@ export default function Home() {
                     </span>
                   </div>
                 </div>
-              </AnimateOnScroll>
-            </AnimateOnScroll>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -85,31 +108,33 @@ export default function Home() {
       <section className="section-padding relative">
         <ThreeJSBackground variant="particles" color="#8b5cf6" />
         <div className="container-custom relative z-10">
-          <AnimateOnScroll animation="fade-up" className="text-center max-w-3xl mx-auto mb-12">
+          <div className="text-center max-w-3xl mx-auto mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">About Milaan Infotech</h2>
             <p className="text-lg text-muted-foreground">
               We are a team of passionate tech enthusiasts and marketing experts dedicated to helping businesses thrive
               in the digital landscape.
             </p>
-          </AnimateOnScroll>
+          </div>
 
           <div className="grid md:grid-cols-2 gap-12 items-center">
-            <AnimateOnScroll animation="slide-in-left" className="relative h-[350px] md:h-[450px]">
+            <div className="relative h-[350px] md:h-[450px]">
               <Image
                 src="/images/milaan-logo.jpg"
                 alt="About Milaan Infotech"
                 fill
                 className="object-cover rounded-lg shadow-lg dark:opacity-90"
+                placeholder="blur"
+                blurDataURL={BLUR_DATA_URL}
               />
-            </AnimateOnScroll>
-            <AnimateOnScroll animation="slide-in-right" className="space-y-6">
+            </div>
+            <div className="space-y-6">
               <h3 className="text-2xl font-bold">Our Mission</h3>
               <p className="text-muted-foreground">
                 To empower businesses with cutting-edge technology solutions and digital marketing strategies that drive
                 growth, enhance customer engagement, and maximize ROI.
               </p>
 
-              <StaggeredChildren animation="fade-up" staggerDelay={150} className="space-y-4">
+              <div className="space-y-4">
                 <div className="flex items-start space-x-3">
                   <CheckCircle className="h-5 w-5 text-primary shrink-0 mt-1" />
                   <div>
@@ -137,12 +162,12 @@ export default function Home() {
                     </p>
                   </div>
                 </div>
-              </StaggeredChildren>
+              </div>
 
               <Button asChild className="transition-all hover:scale-105">
                 <Link href="/about">Learn More About Us</Link>
               </Button>
-            </AnimateOnScroll>
+            </div>
           </div>
         </div>
       </section>
@@ -154,18 +179,14 @@ export default function Home() {
       <section className="section-padding bg-muted dark:bg-background/30 relative">
         <ThreeJSBackground variant="network" color="#06b6d4" />
         <div className="container-custom relative z-10">
-          <AnimateOnScroll animation="fade-up" className="text-center max-w-3xl mx-auto mb-12">
+          <div className="text-center max-w-3xl mx-auto mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Our Services</h2>
             <p className="text-lg text-muted-foreground">
               Comprehensive digital solutions to help your business grow and succeed in the digital landscape.
             </p>
-          </AnimateOnScroll>
+          </div>
 
-          <StaggeredChildren
-            animation="fade-up"
-            staggerDelay={100}
-            className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"
-          >
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             <HoverCard hoverEffect="glow">
               <Card className="dark:dark-card-glow">
                 <CardHeader className="pb-2">
@@ -325,210 +346,27 @@ export default function Home() {
                 </CardContent>
               </Card>
             </HoverCard>
-          </StaggeredChildren>
+          </div>
 
-          <AnimateOnScroll animation="fade-up" delay={600} className="text-center mt-12">
+          <div className="text-center mt-12">
             <Button size="lg" asChild className="transition-all hover:scale-105">
               <Link href="/services">View All Services</Link>
             </Button>
-          </AnimateOnScroll>
-        </div>
-      </section>
-
-      {/* Roadmap Section */}
-      <section className="section-padding relative">
-        <ThreeJSBackground variant="waves" color="#f59e0b" />
-        <div className="container-custom relative z-10">
-          <AnimateOnScroll animation="fade-up" className="text-center max-w-3xl mx-auto mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Roadmap for Business Growth</h2>
-            <p className="text-lg text-muted-foreground">
-              Our proven step-by-step approach to transform your business and drive sustainable growth.
-            </p>
-          </AnimateOnScroll>
-
-          <div className="relative">
-            {/* Vertical line for desktop */}
-            <div className="absolute left-1/2 top-0 h-full w-0.5 bg-border hidden md:block -translate-x-1/2" />
-
-            <div className="space-y-12 relative">
-              {/* Step 1 */}
-              <div className="md:grid md:grid-cols-2 md:gap-8 items-center">
-                <AnimateOnScroll animation="slide-in-left" className="md:text-right space-y-4 relative">
-                  <div className="hidden md:block absolute right-0 top-6 w-6 h-6 rounded-full bg-primary -translate-y-1/2 translate-x-1/2 z-10" />
-                  <h3 className="text-2xl font-bold">Discovery & Analysis</h3>
-                  <p className="text-muted-foreground">
-                    We begin by understanding your business, goals, target audience, and current digital presence to
-                    identify opportunities.
-                  </p>
-                </AnimateOnScroll>
-                <AnimateOnScroll animation="slide-in-right" className="mt-4 md:mt-0 relative">
-                  <div className="md:hidden absolute left-0 top-0 w-6 h-6 rounded-full bg-primary -translate-x-1/2" />
-                  <div className="bg-muted rounded-lg p-6 ml-8 md:ml-0 transition-all hover:shadow-md">
-                    <ul className="space-y-2">
-                      <li className="flex items-start space-x-2">
-                        <CheckCircle className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                        <span>Business goals assessment</span>
-                      </li>
-                      <li className="flex items-start space-x-2">
-                        <CheckCircle className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                        <span>Competitor analysis</span>
-                      </li>
-                      <li className="flex items-start space-x-2">
-                        <CheckCircle className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                        <span>Market opportunity identification</span>
-                      </li>
-                    </ul>
-                  </div>
-                </AnimateOnScroll>
-              </div>
-
-              {/* Step 2 */}
-              <div className="md:grid md:grid-cols-2 md:gap-8 items-center">
-                <AnimateOnScroll animation="slide-in-right" className="md:order-2 space-y-4 relative">
-                  <div className="hidden md:block absolute left-0 top-6 w-6 h-6 rounded-full bg-primary -translate-y-1/2 -translate-x-1/2 z-10" />
-                  <h3 className="text-2xl font-bold">Strategy Development</h3>
-                  <p className="text-muted-foreground">
-                    Based on our findings, we create a customized digital strategy aligned with your business
-                    objectives.
-                  </p>
-                </AnimateOnScroll>
-                <AnimateOnScroll animation="slide-in-left" className="mt-4 md:mt-0 md:order-1 relative">
-                  <div className="md:hidden absolute left-0 top-0 w-6 h-6 rounded-full bg-primary -translate-x-1/2" />
-                  <div className="bg-muted rounded-lg p-6 ml-8 md:ml-0 transition-all hover:shadow-md">
-                    <ul className="space-y-2">
-                      <li className="flex items-start space-x-2">
-                        <CheckCircle className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                        <span>Custom roadmap creation</span>
-                      </li>
-                      <li className="flex items-start space-x-2">
-                        <CheckCircle className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                        <span>Technology selection</span>
-                      </li>
-                      <li className="flex items-start space-x-2">
-                        <CheckCircle className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                        <span>Marketing channel strategy</span>
-                      </li>
-                    </ul>
-                  </div>
-                </AnimateOnScroll>
-              </div>
-
-              {/* Step 3 */}
-              <div className="md:grid md:grid-cols-2 md:gap-8 items-center">
-                <AnimateOnScroll animation="slide-in-left" className="md:text-right space-y-4 relative">
-                  <div className="hidden md:block absolute right-0 top-6 w-6 h-6 rounded-full bg-primary -translate-y-1/2 translate-x-1/2 z-10" />
-                  <h3 className="text-2xl font-bold">Implementation</h3>
-                  <p className="text-muted-foreground">
-                    Our expert team executes the strategy, developing solutions and implementing marketing campaigns.
-                  </p>
-                </AnimateOnScroll>
-                <AnimateOnScroll animation="slide-in-right" className="mt-4 md:mt-0 relative">
-                  <div className="md:hidden absolute left-0 top-0 w-6 h-6 rounded-full bg-primary -translate-x-1/2" />
-                  <div className="bg-muted rounded-lg p-6 ml-8 md:ml-0 transition-all hover:shadow-md">
-                    <ul className="space-y-2">
-                      <li className="flex items-start space-x-2">
-                        <CheckCircle className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                        <span>Website/app development</span>
-                      </li>
-                      <li className="flex items-start space-x-2">
-                        <CheckCircle className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                        <span>Digital marketing campaign launch</span>
-                      </li>
-                      <li className="flex items-start space-x-2">
-                        <CheckCircle className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                        <span>Content creation and optimization</span>
-                      </li>
-                    </ul>
-                  </div>
-                </AnimateOnScroll>
-              </div>
-
-              {/* Step 4 */}
-              <div className="md:grid md:grid-cols-2 md:gap-8 items-center">
-                <AnimateOnScroll animation="slide-in-right" className="md:order-2 space-y-4 relative">
-                  <div className="hidden md:block absolute left-0 top-6 w-6 h-6 rounded-full bg-primary -translate-y-1/2 -translate-x-1/2 z-10" />
-                  <h3 className="text-2xl font-bold">Monitoring & Optimization</h3>
-                  <p className="text-muted-foreground">
-                    We continuously track performance, analyze data, and make data-driven improvements to maximize
-                    results.
-                  </p>
-                </AnimateOnScroll>
-                <AnimateOnScroll animation="slide-in-left" className="mt-4 md:mt-0 md:order-1 relative">
-                  <div className="md:hidden absolute left-0 top-0 w-6 h-6 rounded-full bg-primary -translate-x-1/2" />
-                  <div className="bg-muted rounded-lg p-6 ml-8 md:ml-0 transition-all hover:shadow-md">
-                    <ul className="space-y-2">
-                      <li className="flex items-start space-x-2">
-                        <CheckCircle className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                        <span>Performance analytics</span>
-                      </li>
-                      <li className="flex items-start space-x-2">
-                        <CheckCircle className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                        <span>Conversion rate optimization</span>
-                      </li>
-                      <li className="flex items-start space-x-2">
-                        <CheckCircle className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                        <span>Strategy refinement</span>
-                      </li>
-                    </ul>
-                  </div>
-                </AnimateOnScroll>
-              </div>
-
-              {/* Step 5 */}
-              <div className="md:grid md:grid-cols-2 md:gap-8 items-center">
-                <AnimateOnScroll animation="slide-in-left" className="md:text-right space-y-4 relative">
-                  <div className="hidden md:block absolute right-0 top-6 w-6 h-6 rounded-full bg-primary -translate-y-1/2 translate-x-1/2 z-10" />
-                  <h3 className="text-2xl font-bold">Growth & Scaling</h3>
-                  <p className="text-muted-foreground">
-                    As your business grows, we help you scale your digital presence and explore new opportunities.
-                  </p>
-                </AnimateOnScroll>
-                <AnimateOnScroll animation="slide-in-right" className="mt-4 md:mt-0 relative">
-                  <div className="md:hidden absolute left-0 top-0 w-6 h-6 rounded-full bg-primary -translate-x-1/2" />
-                  <div className="bg-muted rounded-lg p-6 ml-8 md:ml-0 transition-all hover:shadow-md">
-                    <ul className="space-y-2">
-                      <li className="flex items-start space-x-2">
-                        <CheckCircle className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                        <span>Expansion planning</span>
-                      </li>
-                      <li className="flex items-start space-x-2">
-                        <CheckCircle className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                        <span>New market penetration</span>
-                      </li>
-                      <li className="flex items-start space-x-2">
-                        <CheckCircle className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                        <span>Long-term growth strategy</span>
-                      </li>
-                    </ul>
-                  </div>
-                </AnimateOnScroll>
-              </div>
-            </div>
           </div>
-
-          <AnimateOnScroll animation="fade-up" delay={300} className="text-center mt-12">
-            <Button size="lg" asChild className="transition-all hover:scale-105">
-              <Link href="/roadmap">Learn More About Our Process</Link>
-            </Button>
-          </AnimateOnScroll>
         </div>
       </section>
 
       {/* Testimonials Section */}
       <section className="section-padding bg-muted">
         <div className="container-custom">
-          <AnimateOnScroll animation="fade-up" className="text-center max-w-3xl mx-auto mb-12">
+          <div className="text-center max-w-3xl mx-auto mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">What Our Clients Say</h2>
             <p className="text-lg text-muted-foreground">
               Don't just take our word for it. Here's what our clients have to say about working with us.
             </p>
-          </AnimateOnScroll>
+          </div>
 
-          <StaggeredChildren
-            animation="fade-up"
-            staggerDelay={200}
-            className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
-          >
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             <HoverCard hoverEffect="glow">
               <TestimonialCard
                 quote="Milaan Infotech transformed our online presence completely. Their team delivered a stunning website and effective digital marketing strategy that increased our leads by 150%."
@@ -555,18 +393,12 @@ export default function Home() {
                 rating={4}
               />
             </HoverCard>
-          </StaggeredChildren>
-
-          {/* <AnimateOnScroll animation="fade-up" delay={600} className="mt-16">
-            <ClientLogos />
-          </AnimateOnScroll> */}
+          </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <AnimateOnScroll animation="fade-up">
-        <ContactCTA />
-      </AnimateOnScroll>
+      <ContactCTA />
     </>
   )
 }
